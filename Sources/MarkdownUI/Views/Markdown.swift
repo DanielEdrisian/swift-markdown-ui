@@ -195,6 +195,7 @@ public struct Markdown: View {
   private let content: MarkdownContent
   private let baseURL: URL?
   private let imageBaseURL: URL?
+  private let fontSizeFactor: Double
 
   /// Creates a Markdown view from a Markdown content value.
   /// - Parameters:
@@ -203,10 +204,11 @@ public struct Markdown: View {
   ///              URLs absolute. The default is `nil`.
   ///   - imageBaseURL: The base URL to use when resolving Markdown image URLs. If this value is `nil`, the initializer will
   ///                   determine image URLs using the `baseURL` parameter. The default is `nil`.
-  public init(_ content: MarkdownContent, baseURL: URL? = nil, imageBaseURL: URL? = nil) {
+    public init(_ content: MarkdownContent, baseURL: URL? = nil, imageBaseURL: URL? = nil, fontSizeFactor: Double = 1.0) {
     self.content = content
     self.baseURL = baseURL
     self.imageBaseURL = imageBaseURL ?? baseURL
+        self.fontSizeFactor = fontSizeFactor
   }
 
   public var body: some View {
@@ -214,7 +216,7 @@ public struct Markdown: View {
       BlockSequence(self.blocks)
         .foregroundColor(attributes.foregroundColor)
         .background(attributes.backgroundColor)
-        .modifier(ScaledFontSizeModifier(attributes.fontProperties?.size))
+        .modifier(ScaledFontSizeModifier(Double(attributes.fontProperties?.size ?? 13.0) * fontSizeFactor))
     }
     .textStyle(self.text)
     .environment(\.baseURL, self.baseURL)
